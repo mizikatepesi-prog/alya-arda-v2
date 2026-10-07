@@ -1,0 +1,82 @@
+AlyaArda_Proje/
+│
+├── 01_Sistem_Tasarim_Dokumani.txt
+├── 02_Alya_Sistem_Promptu.txt
+├── 03_Arda_Sistem_Promptu.txt
+├── 04_Guvenlik_ve_Etik_Kurallar.txt
+├── 05_KVKK_Uyum_Plani.txt
+├── 06_Yasal_Risk_Analizi.txt
+├── 07_Sohbet_Loglari/
+│   └── (ileride buraya kaydedilecek)
+└── 08_Yedekler/
+    └── (düzenli yedek kopyaları)
+
+
+
+
+
+=====================================================
+ALYA & ARDA PROJESİ
+SİSTEM TASARIM VE RİSK YÖNETİMİ DOKÜMANI
+=====================================================
+
+Oluşturma Tarihi: [03.10.2026]
+Son Güncelleme: [03.10.2026]
+Hazırlayan: [Adın]
+
+-----------------------------------------------------
+1. PROJENİN AMACI
+-----------------------------------------------------
+Yalnızlık çeken insanlara Alya (kadın) ve Arda (erkek) 
+karakterleri üzerinden gerçekçi bir arkadaşlık deneyimi 
+sunmak. Kullanıcının mesleği, hobileri ve günlük hayatı 
+hakkında destek olmak; kültürel ve coğrafi bağlama uygun 
+iletişim kurmak.
+
+-----------------------------------------------------
+2. KARAKTERLER
+-----------------------------------------------------
+Alya: [kişilik, yaş, meslek, konuşma tarzı]
+Arda: [kişilik, yaş, meslek, konuşma tarzı]
+
+-----------------------------------------------------
+3. GÜVENLİK VE ETİK İLKELER
+-----------------------------------------------------
+- Kullanıcının iyiliği her şeyin üstündedir.
+- Bağımlılık değil, sağlıklı bağ hedeflenir.
+- 18 yaş altı kullanıcılar için özel mod zorunludur.
+- Zararlı alışkanlıklarda yargılamadan yönlendirme yapılır.
+- İntihar veya kendine zarar verme eğiliminde 112/182 
+  hattına yönlendirme yapılır.
+- Hassas veriler (din, siyaset, cinsel yönelim) izinsiz 
+  işlenmez.
+
+-----------------------------------------------------
+4. YASAL UYUM
+-----------------------------------------------------
+- KVKK aydınlatma ve açık rıza
+- Yapay zekâ etiketleme zorunluluğu
+- Geliştirici sorumluluğu belgeleri
+- Veri işleme sözleşmeleri
+
+-----------------------------------------------------
+5. RİSK YÖNETİMİ
+-----------------------------------------------------
+Risk: Kullanıcı intihar eğilimi gösterirse
+Önlem: Sistem alarm kaydı oluşturur, kullanıcıya 182 
+        hattı önerilir.
+
+Risk: Kullanıcı 18 yaşından küçükse
+Önlem: Özel genç modu devreye girer, hassas içerik 
+        engellenir.
+
+Risk: Kullanıcı uygunsuz görüntü gönderirse
+Önlem: Görüntü yorumlanmaz, kullanıcı CİMER'e 
+        yönlendirilir.
+
+[Bu bölümü her yeni risk ve önlemle güncelle]
+
+-----------------------------------------------------
+6. DEĞİŞİKLİK GEÇMİŞİ
+-----------------------------------------------------
+[03.10.2026] İlk taslak oluşturuldu.
