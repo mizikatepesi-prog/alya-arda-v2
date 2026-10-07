@@ -1,1 +1,0 @@
-# Alya & Arda - Ana Uygulama
