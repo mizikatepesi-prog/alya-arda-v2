@@ -1,4 +1,4 @@
-# Alya & Arda - Ana Uygulama
+# Alya & Arda - Uygulama
 import json
 import os
 from datetime import datetime
