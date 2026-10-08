@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 from dotenv import load_dotenv
 from groq import Groq
-
+from karakter_yukle import karakter_promptu_yukle, GORUNEN_ISIMLER
 load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
