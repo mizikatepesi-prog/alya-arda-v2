@@ -1,4 +1,6 @@
 streamlit
-groq
+openai
 python-dotenv
-websocket-client
+audio-recorder-streamlit
+SpeechRecognition
+gTTS

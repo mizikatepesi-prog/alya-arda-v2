@@ -3,12 +3,24 @@ import json
 import os
 from datetime import datetime
 from dotenv import load_dotenv
-from groq import Groq
+from openai import OpenAI
 from karakter_yukle import karakter_promptu_yukle, GORUNEN_ISIMLER
+import base64
+import io
+
+# Sesli sohbet için
+try:
+    from audio_recorder_streamlit import audio_recorder
+    import speech_recognition as sr
+    from gtts import gTTS
+    SES_DESTEGI = True
+except ImportError:
+    SES_DESTEGI = False
+
 load_dotenv()
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-MODEL_ADI = "openai/gpt-oss-120b"
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+MODEL_ADI = "deepseek-chat"
 
 VERI_KLASORU = "veri"
 KULLANICI_DOSYASI = os.path.join(VERI_KLASORU, "kullanicilar.json")
@@ -56,8 +68,11 @@ def sohbet_kaydet(kullanici_id, mesajlar):
     with open(dosya, "w", encoding="utf-8") as f:
         json.dump(mesajlar, f, ensure_ascii=False, indent=2)
 
-def groq_cevap_al(sistem_promptu, mesajlar):
-    client = Groq(api_key=GROQ_API_KEY)
+def deepseek_cevap_al(sistem_promptu, mesajlar):
+    client = OpenAI(
+        api_key=DEEPSEEK_API_KEY,
+        base_url="https://api.deepseek.com"
+    )
     tam_mesajlar = [{"role": "system", "content": sistem_promptu}] + mesajlar
     cevap = client.chat.completions.create(
         model=MODEL_ADI,
@@ -66,6 +81,32 @@ def groq_cevap_al(sistem_promptu, mesajlar):
         max_tokens=500
     )
     return cevap.choices[0].message.content
+
+def sesi_metne_cevir(audio_bytes):
+    """Mikrofon kaydını metne çevirir."""
+    recognizer = sr.Recognizer()
+    try:
+        with sr.AudioFile(io.BytesIO(audio_bytes)) as source:
+            audio = recognizer.record(source)
+        return recognizer.recognize_google(audio, language="tr-TR")
+    except sr.UnknownValueError:
+        return None
+    except Exception as e:
+        st.warning(f"Ses tanınamadı: {e}")
+        return None
+
+def metni_sese_cevir(metin):
+    """Metni sese çevirip HTML audio player döndürür."""
+    try:
+        tts = gTTS(text=metin, lang="tr")
+        audio_buffer = io.BytesIO()
+        tts.write_to_fp(audio_buffer)
+        audio_buffer.seek(0)
+        audio_base64 = base64.b64encode(audio_buffer.read()).decode()
+        return f'<audio autoplay controls src="data:audio/mp3;base64,{audio_base64}"></audio>'
+    except Exception as e:
+        st.warning(f"Ses oluşturulamadı: {e}")
+        return None
 
 st.set_page_config(
     page_title="Alya & Arda",
@@ -176,6 +217,40 @@ else:
         with st.chat_message(mesaj["role"]):
             st.write(mesaj["content"])
 
+    # --- Sesli sohbet arayüzü ---
+    if SES_DESTEGI:
+        with st.expander("🎤 Sesli Mesaj", expanded=False):
+            st.caption("Mikrofona basılı tutup konuşun, bırakınca metne çevrilsin.")
+            audio_bytes = audio_recorder(
+                text="",
+                recording_color="#ff6b9d",
+                neutral_color="#6c5ce7",
+                icon_size="2x",
+                pause_threshold=2.0,
+            )
+            if audio_bytes:
+                with st.spinner("Ses metne çevriliyor..."):
+                    metin = sesi_metne_cevir(audio_bytes)
+                if metin:
+                    st.session_state.mesajlar.append({"role": "user", "content": metin})
+                    with st.chat_message("user"):
+                        st.write(metin)
+                    with st.chat_message("assistant"):
+                        with st.spinner("Yazıyor..."):
+                            try:
+                                sistem_promptu = prompt_yukle(karakter)
+                                cevap = deepseek_cevap_al(sistem_promptu, st.session_state.mesajlar)
+                                st.write(cevap)
+                                st.session_state.mesajlar.append({"role": "assistant", "content": cevap})
+                                sohbet_kaydet(kullanici_id, st.session_state.mesajlar)
+                                # Sesli cevap
+                                ses_html = metni_sese_cevir(cevap)
+                                if ses_html:
+                                    st.markdown(ses_html, unsafe_allow_html=True)
+                            except Exception as e:
+                                st.error(f"Bir hata oluştu: {e}")
+                    st.rerun()
+
     yeni_mesaj = st.chat_input("Bir şey yaz...")
 
     if yeni_mesaj:
@@ -187,7 +262,7 @@ else:
             with st.spinner("Yazıyor..."):
                 try:
                     sistem_promptu = prompt_yukle(karakter)
-                    cevap = groq_cevap_al(sistem_promptu, st.session_state.mesajlar)
+                    cevap = deepseek_cevap_al(sistem_promptu, st.session_state.mesajlar)
                     st.write(cevap)
                     st.session_state.mesajlar.append({"role": "assistant", "content": cevap})
                     sohbet_kaydet(kullanici_id, st.session_state.mesajlar)
